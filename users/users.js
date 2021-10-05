@@ -1,55 +1,36 @@
-const { writeFile } = require("fs").promises;
-const { join } = require("path");
+const mongoose = require('mongoose');
+const DB_USER = "admin";
+const DB_PASSWORD = "admin123";
 
-const users = require("./usersDb");
+mongoose.connect(
+    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.hmfhh.mongodb.net/mega_kurs?retryWrites=true&w=majority`,
+    {
+        useUnifiedTopology: true,
+        useNewUrlParser: true
+    });
 
-const save =  async () => {
+const schema = new mongoose.Schema({
+    name: String,
+    lastName: String
+})
 
-    await writeFile(join(__dirname, "usersDb.json"), JSON.stringify(users, null, 4));
-
-};
-
-const copy = obj => ({...obj});
-
-const getNextId = () => {
-
-    const lastUser = users[users.length - 1];
-
-    return lastUser ? lastUser.id + 1 : 1;
-
-}
-
-const findUserById = (id) => {
-
-    const userId = parseInt(id);
-
-    return users.find(u => u.id === userId);
-}
+const User = mongoose.model('User', schema);
 
 const addUser = async userData => {
-
-    userData.id = getNextId();
-
-    users.push(userData);
-
-    await save();
-
-    return getUser(userData.id);
-
+    const user = new User(userData);
+    return await user.save();
 }
 
-const getUser = id => copy( findUserById(id) );
+const getUser = async id => {
+    const user = await User.findById(id).exec();
+    return user;
+};
 
 const updateUser = async userData => {
+    const id = userData.id;
+    delete userData.id
 
-    const user = findUserById(userData.id);
-
-    const index = users.indexOf(user);
-
-    const updatedUser = { ...user, ...userData};
-
-    users.splice(index, 1, updatedUser );
-    await save();
+    const user = await User.findByIdAndUpdate(id, userData).exec();
 
     return getUser(user.id);
 
@@ -57,20 +38,14 @@ const updateUser = async userData => {
 
 const deleteUser = async id => {
 
-    const user = findUserById(id);
-    const index = users.indexOf(user);
+    const user = await User.findByIdAndRemove(id).exec();
 
-    users.splice(index, 1);
-
-    await save();
-
-    return copy(user);
+    return user;
 }
 
-function listUsers() {
-
-    return copy(users);
-
+const listUsers =  async (cb) => {
+    const users = await User.find().exec();
+    return users;
 }
 
 module.exports = {
