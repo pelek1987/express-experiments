@@ -1,6 +1,7 @@
+require('dotenv').config()
+
 const mongoose = require('mongoose');
-const DB_USER = "admin";
-const DB_PASSWORD = "admin123";
+const { DB_USER, DB_PASSWORD } = process.env;
 
 mongoose.connect(
     `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.hmfhh.mongodb.net/mega_kurs?retryWrites=true&w=majority`,
