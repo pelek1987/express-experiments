@@ -45,8 +45,7 @@ app.listen(8080, (err) => {
 
     if(err) {
         console.error(err);
+    } else {
+        console.log("Serwer został uruchomiony pod adresem http://localhost:8080");
     }
-
-    console.log("Serwer został uruchomiony pod adresem http://localhost:8080");
-
 });

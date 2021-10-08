@@ -15,7 +15,7 @@ router.post("/users", async (req, res) => {
     } catch(err) {
         res.status(404);
         res.json({
-            error: err.message
+            error: 'Couldn\'t  add user'
         });
 
     }
@@ -27,7 +27,7 @@ router.get("/users/:id", async (req, res) => {
     } catch(err) {
         res.status(404);
         res.json({
-            error: err.message
+            error: 'User not found.'
         });
 
     }
@@ -41,7 +41,7 @@ router.put("/users/:id",  async (req, res) => {
     } catch(err) {
         res.status(404);
         res.json({
-            error: err.message
+            error: 'User not updated'
         })
     }
 });
@@ -52,7 +52,7 @@ router.delete("/users/:id",  async (req, res) => {
     } catch(err) {
         res.status(404);
         res.json({
-            error: err.message
+            error: 'Couldn\'t delete user'
         })
     }
 });
